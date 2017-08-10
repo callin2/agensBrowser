@@ -1,0 +1,6 @@
+--insert into `MEMBER_ROLE` (`ROLE_ID`, `ROLE`) values (21, 'ADMIN');
+--insert into `MEMBER_ROLE` (`ROLE_ID`, `ROLE`) values (22, 'USER');
+
+
+--insert into `MEMBER` (`UID`, `UPW`, `UNAME`) values ('agraph', 'agraph', 21);
+--insert into `MEMBER` (`UID`, `UPW`, `UNAME`) values ('test01', 'test01', 22);
