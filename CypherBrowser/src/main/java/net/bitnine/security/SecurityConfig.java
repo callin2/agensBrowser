@@ -14,12 +14,17 @@ import lombok.extern.java.Log;
 @Log
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@Autowired UserService userService;
+	@Autowired SecurityUserService securityUserService;
+
+    @Autowired
+    private RESTAuthenticationSuccessHandler authenticationSuccessHandler;
+
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-//		log.info("security config..........................................................");
-        
+
+	    http.csrf().disable();
+	    
         http.authorizeRequests().antMatchers("/h2console/**").permitAll();
         
         http.authorizeRequests().antMatchers("/guest/**").permitAll();
@@ -27,24 +32,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/manager/**").hasRole("MANAGER");
         
         http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
+
+        http.headers().frameOptions().disable();
         
-        http.formLogin().loginPage("/login");
+
+		
+		http.authorizeRequests().antMatchers("/api/v1/db/login").permitAll();
+
+        http.authorizeRequests().antMatchers("/api/v1/db/query").hasRole("USER");
+        
+        http.authorizeRequests().antMatchers("/api/v1/db/admin").hasRole("ADMIN");
+
+        http.formLogin().loginPage("/login").successHandler(authenticationSuccessHandler);
+
+        //http.formLogin().loginPage("/api/v1/db/testLogin");
+		
+		
+
         
         http.exceptionHandling().accessDeniedPage("/accessDenied");
         
         http.logout().logoutUrl("/logout").invalidateHttpSession(true);
         
-        http.userDetailsService(userService);
+        http.userDetailsService(securityUserService);
 	}
 	
-	@Autowired
+	/*@Autowired
 	public void configureGlobal (AuthenticationManagerBuilder auth) throws Exception {
 		
 		auth.inMemoryAuthentication()
 			.withUser("manager")
 			.password("1111")
 			.roles("MANAGER");
-	}
+	}*/
 	
 	
 }

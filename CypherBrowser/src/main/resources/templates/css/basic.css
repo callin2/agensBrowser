@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+.contents {
+	margin: 5px;
+	padding: 5px;
+	width: 800px;
+}
+.url { width: 400px; }
+.query { width: 500px; }
+.authorization { width: 500px; }
+
+label  {
+	width: 120px;
+  display: inline-block;
+}
+
+.result {
+	display:none;
+}
+
+a:link {text-decoration: none; color: #333333;}
+a:visited {text-decoration: none; color: #333333;}
+a:active {text-decoration: none; color: #333333;}
+a:hover {text-decoration: none; color: dodgerblue;}
+
+ul {
+	list-style: none;
+}
+
+ul li { 
+	color: #808080;
+	padding-bottom: 5px; 
+	font-size: 20px; 
+	font-family: Arial, Helvetica, sans-serif; 
+	display:inline-block; 
+	padding-right: 10px; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

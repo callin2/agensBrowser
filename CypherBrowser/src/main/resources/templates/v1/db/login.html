@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>LogIn</title>
+	<link rel="stylesheet" type="text/css" href="/css/basic.css" />
+	<script src="/script/jquery-3.2.1.min.js"></script>
+	<script src="/script/utils.js"></script>
+	<script>
+	$(function() {
+		
+		// submitButton 버튼 클릭시 데이터를 url로 전송하고 토큰값을 json형태로 받아오는 ajax
+		$('#submitButton').on("click", function(event) {
+			event.preventDefault();
+						
+			$.ajax({
+				type : 'post',
+				url : '/api/v1/db/connect', 
+				headers : {
+					"Content-Type" : "application/json",
+					"X-HTTP-Method-Override" : "POST"
+				},
+				dataType : 'text',
+			    data: JSON.stringify({			// data를 JSON.stringify 해서 post. controller에서 @RequestBody DBConnectionInfo dbConnectionInfo로 받음. 
+			    	url: $("#url").val(),
+			    	username: $("#username").val(),
+			        password: $("#password").val()
+			    }),
+				success : function (result) {
+					var formattedJson = goodFormatReplaceJson(result);		// utils.js의 goodFormatReplaceJson함수를 호출헤서 json을 보기 좋은 포맷으로 변환
+					$(".result").html(formattedJson);
+					$(".result").show();
+				}
+				
+			});
+		});
+		
+	});
+	</script>
+</head>
+<body>
+	<div class="navi">
+		<ul>
+			<li><a href="/api/v1/db/login">login</a></li>
+			<li><a href="/api/v1/db/query">query</a></li>
+			<li><a href="/api/v1/db/admin">admin</a></li>
+			<li><a href="/api/v1/db/h2">test</a></li>
+		</ul>
+	</div>
+	<div class="contents">
+		<form name = "loginForm" id="loginForm" action="/api/v1/db/connect">
+			<p><label for="url">URL: </label><input type="text" id="url" class="url" name="url" /></p>
+			<p><label for="username">USERNAME: </label><input type="text" id="username" name="username" /></p>
+			<p><label for="password">PASSWORD: </label><input type="password" id="password" name="password" /></p>
+			<p><button id="submitButton">submit</button></p>
+		</form>	
+	</div>
+	<div class="result"></div>
+</body>
+</html>

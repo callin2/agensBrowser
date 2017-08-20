@@ -12,7 +12,6 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
   <hr />
   <h3 sec:authentication="name">Spring security username</h3>
-  <h3>[[${#authentication.name}]]</h3>
   <hr />
   
   <p sec:authorize-url="/admin/aaa">
@@ -29,17 +28,11 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
   <hr/>
 
-<div >[[${#authentication.principal}]]</div> 
   <hr/>
 
-  <div>[[${#authentication.principal.member}]]</div>  
   
   <hr/>
 
-    <div th:with="member=${#authentication.principal.member}">
-    <p>[[${member.uid}]]</p>
-    <p>[[${member.upw}]]</p>
-    <p>[[${member.uname}]]</p>
   </div>
   
 </body>
