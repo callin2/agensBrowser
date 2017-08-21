@@ -15,13 +15,7 @@ public class HistoryService {
 	@Autowired HistoryRepository repository;
 	
 	public void persist(History history) {
-
-	    List<History> historyList = new ArrayList<>();
-	    historyList.add(history);
-
-	    Iterable<History> historyIterable = historyList;
-	    
-		repository.saveAll(historyIterable);
+		repository.saveAndFlush(history);
 	}
 
 }
