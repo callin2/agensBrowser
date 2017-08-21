@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.bitnine.jwt.ConnectionInfoMap;
@@ -21,6 +22,7 @@ public class ConnectInfoController {
     @Autowired private ConnectionInfoMap connectionInfoMap;
     
     @RequestMapping(value="/connectInfo", method=RequestMethod.POST)
+    @ResponseBody
     public ConnectionInfoMap getConnectInfos() {        
         return connectionInfoMap;
     }

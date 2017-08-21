@@ -1,6 +1,8 @@
 package net.bitnine.log;
 
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,8 +12,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import net.bitnine.domain.History;
+import net.bitnine.domain.dto.QueryInfo;
 import net.bitnine.jwt.ConnectInfo;
 import net.bitnine.jwt.TokenAuthentication;
+import net.bitnine.service.HistoryService;
 import net.bitnine.jwt.ConnectionInfoMap;
 
 /**
@@ -26,6 +31,7 @@ public class QueryLogWriter {
 
     @Autowired private ConnectionInfoMap userInfoMap;
     @Autowired private TokenAuthentication tokenAuthentication;
+    @Autowired private HistoryService historyService;
     
     private static final String CONNECT_SUCCESS = "Database Connect Success";
     
@@ -38,7 +44,7 @@ public class QueryLogWriter {
     public void connectInfo() { }
     
     // 포인트 컷. 로직을 적용할 지점을 설정.
-    @Pointcut("execution(* net.bitnine.controller.JsonObjectController.getJson(..))") 
+    @Pointcut("execution(* net.bitnine.controller.JsonObjectController.queryPost(..))") 
     public void queryLog() { }
 	
 
@@ -51,14 +57,20 @@ public class QueryLogWriter {
      */
     @Around("queryLog()")
     public Object queryLog (ProceedingJoinPoint JoinPoint) throws Throwable { 
-        
-        String token = (String) JoinPoint.getArgs()[1];     // 대상 메소드의 2번째 인자 [ getJson(String query, @RequestHeader(value="Authorization") String Authorization) ]를 가져옴.
+
+        String token = (String) JoinPoint.getArgs()[0];     // 대상 메소드의 1번째 인자 [ getJson(String query, @RequestHeader(value="Authorization") String Authorization) ]를 가져옴.
+        QueryInfo queryInfo = (QueryInfo) JoinPoint.getArgs()[1];     // 대상 메소드의 2번째 인자 [ getJson(String query, @RequestHeader(value="Authorization") String Authorization) ]를 가져옴.
         
         Object ret = JoinPoint.proceed();      // 프록시 대상 객체의 실제 메소드를 호출.  
 
 //        String key = tokenAuthentication.getIdInToken(token);       // 해당 토큰에서 key를 가져옴        
 
         String userId = tokenAuthentication.getClaimsByToken(token).getId();            // 해당 토큰안에 있는 id를 가져오는 메소드
+        
+        Date current = new Date();
+        History history = new History(userId, current, queryInfo.getQuery());
+        
+        historyService.persist(history);
         
         setConnectInfoByToken(userId);
         
