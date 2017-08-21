@@ -6,11 +6,11 @@
 	<!-- <link rel="stylesheet" type="text/css" href="/src/main/resources/templates/css/basic.css" />
 	<script src="/src/main/resources/templates/script/jquery-3.2.1.min.js"></script>
 	<script src="/src/main/resources/templates/script/utils.js"></script> -->
+	<link rel="stylesheet" type="text/css" href="/css/basic.css" />
 	<script src="/script/jquery-3.2.1.min.js"></script>
 	<script src="/script/utils.js"></script>
 	<script>
 	$(function() {
-
 		
 		// submitButton 버튼 클릭시 데이터를 url로 전송하고 토큰값을 json형태로 받아오는 ajax
 		$('#queryButton').on("click", function(event) {
@@ -35,14 +35,27 @@
 				
 			});
 		});
-		
-        
-	    var token = '${token}';
 
-		$(".result").html(token);
+		var token = readCookie("token");
+		
+		$("#authorization").val(token);
+	   /*  var token = '${token}';
+
+	    alert(token); */
+		//$(".result").html(token);
 	    
 	});
 	
+	function readCookie(name) {
+	    var nameEQ = encodeURIComponent(name) + "=";
+	    var ca = document.cookie.split(';');
+	    for (var i = 0; i < ca.length; i++) {
+	        var c = ca[i];
+	        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+	        if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+	    }
+	    return null;
+	}
 	</script>
 </head>
 <body>
@@ -57,7 +70,7 @@
 	<div class="contents">
 		<form name = "queryForm" id="queryForm" action="/api/v1/db/query">
 			<p><label for="username">Authorization: </label><input type="text" id="authorization" class="authorization" name="authorization" /></p>
-			<p><label for="query">QUERY: </label><input type="text" id="query" class="query" name="query" /></p>
+			<p><label for="query">QUERY: </label><input type="text" id="query" class="query" name="query" value="match (a)<-[c:produced]-(b)  return id(a),label(a),a.title, id(b),label(b),b.name, label(c), id(c)  limit 10"/></p>
 			<p><button id="queryButton">query</button></p>
 		</form>	
 	</div>
