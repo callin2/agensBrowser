@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.bitnine.domain.ClientConnectInfo;
 import net.bitnine.domain.dto.DBConnectionInfo;
 import net.bitnine.jwt.ConnectInfo;
 import net.bitnine.jwt.State;
 import net.bitnine.jwt.TokenAuthentication;
 import net.bitnine.jwt.ConnectionInfoMap;
+import net.bitnine.service.ClientConnectInfoService;
 import net.bitnine.service.DatabaseService;
 import net.bitnine.util.IdGenerator;
 
@@ -42,7 +44,7 @@ public class DataSourceController {
 
     @Autowired private TokenAuthentication tokenAuthentication;
 
-	@Autowired private ConnectionInfoMap connectionInfoMap;    
+    @Autowired private ClientConnectInfoService clientConnectInfoService;
 	
 	@Autowired private IdGenerator idGenerator;
 	
@@ -60,7 +62,7 @@ public class DataSourceController {
         
     	JSONObject jsonObject = new JSONObject();     
     	
-    	checkValidDataSource(dbConnectionInfo);		// 사용자로부터 전달받은 dbconnect 정보로 생성한 dataSource의 유효성을 체크 
+    	//checkValidDataSource(dbConnectionInfo);		// 사용자로부터 전달받은 dbconnect 정보로 생성한 dataSource의 유효성을 체크 
 
         String userId = idGenerator.generateId();            // id 생성
         String tokenString = tokenAuthentication.generateToken(userId);		// token 아이디와 사용자로부터 전달받은 dbconnect 정보로 token 생성.
@@ -70,7 +72,7 @@ public class DataSourceController {
         jsonObject.put("message", "Database Connect Success");
         
 
-        saveConnectionInfo(userId, dbConnectionInfo);   // 사용자 db 접속정보를 application scope 객체 에 저장.
+        //saveConnectionInfo(userId, dbConnectionInfo);   // 사용자 db 접속정보를 application scope 객체 에 저장.
         
         return jsonObject;
         
@@ -96,13 +98,13 @@ public class DataSourceController {
 	
     
     // 사용자로부터 전달받은 정보로 생성한 dataSource의 유효성을 체크
-    private void checkValidDataSource(DBConnectionInfo dbConnectionInfo) throws SQLException {    	
+  /*  private void checkValidDataSource(DBConnectionInfo dbConnectionInfo) throws SQLException {    	
     	databaseService.checkValidDataSource(dbConnectionInfo);	
-	}
+	}*/
 
 
     // 사용자 db 접속정보를 application scope 객체 에 저장.
-	private void saveConnectionInfo(String id, DBConnectionInfo dbConnectionInfo) {
+	/*private void saveConnectionInfo(String id, DBConnectionInfo dbConnectionInfo) {
         
         ConnectInfo connectInfo = new ConnectInfo();       // 새로운 ConnectInfo 객체를 생성.        
         
@@ -113,7 +115,7 @@ public class DataSourceController {
         connectInfo.setDbConnectionInfo(dbConnectionInfo);
         
         connectionInfoMap.getConnectInfos().put(id, connectInfo);      // connectInfos의 connectInfoList에 ConnectInfo 객체를 저장.        
-	}
+	}*/
 	
 	// 현재 시간을 String형으로 반환.
     private String stringCurrentTime() {
@@ -126,7 +128,9 @@ public class DataSourceController {
     public String disConnect(@RequestHeader(value="Authorization") String token)  {
         String userId = tokenAuthentication.getClaimsByToken(token).getId();            // 해당 토큰안에 있는 id를 가져오는 메소드
         
-        ConnectInfo connectInfo = connectionInfoMap.getConnectInfos().get(userId);
+//        ConnectInfo connectInfo = connectionInfoMap.getConnectInfos().get(userId);
+
+        ClientConnectInfo connectInfo = clientConnectInfoService.findById(userId);
                 
         if (connectInfo == null) {
             return "Database DisConnect Failed";            

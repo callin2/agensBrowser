@@ -24,8 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired private RESTAuthenticationSuccessHandler authenticationSuccessHandler;
 
-    @Autowired private LoginSuccessHandler loginSuccessHandler;
-
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {

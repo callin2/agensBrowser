@@ -14,13 +14,6 @@ public class LoginController {
 	public void login() {
 
 	}
-	
-	/*@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginPage(HttpServletRequest request) {
-	    String referrer = request.getHeader("Referer");
-	    request.getSession().setAttribute("prevPage", referrer);
-	    return "login";
-	}*/
 
 	@GetMapping("/accessDenied")
 	public void accessDenied() {

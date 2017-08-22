@@ -15,7 +15,7 @@ public class HistoryService {
 	@Autowired HistoryRepository repository;
 	
 	public void persist(History history) {
-		repository.saveAndFlush(history);
+		repository.save(history);
 	}
 
 }

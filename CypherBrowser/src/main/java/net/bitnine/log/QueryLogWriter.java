@@ -6,9 +6,11 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,12 +42,29 @@ public class QueryLogWriter {
 	private static final String QueryTimes = "쿼리횟수";
 
     // 포인트 컷. 로직을 적용할 지점을 설정.
-    @Pointcut("execution(* net.bitnine.controller.DataSourceController.connect(..))") 
+    @Pointcut("execution(* net.bitnine.security.RESTAuthenticationSuccessHandler.onAuthenticationSuccess(..))") 
     public void connectInfo() { }
     
     // 포인트 컷. 로직을 적용할 지점을 설정.
     @Pointcut("execution(* net.bitnine.controller.JsonObjectController.queryPost(..))") 
     public void queryLog() { }
+    
+    
+    @Around("connectInfo()")
+    public Object connectInfo (ProceedingJoinPoint JoinPoint) throws Throwable {
+     // retrieve the methods parameter types (static):
+        final Signature signature = JoinPoint.getStaticPart().getSignature();
+        if(signature instanceof MethodSignature){
+            final MethodSignature ms = (MethodSignature) signature;
+            final Class<?>[] parameterTypes = ms.getParameterTypes();
+            for(final Class<?> pt : parameterTypes){
+                System.out.println("Parameter type:" + pt);
+            }
+        }
+        Object ret = JoinPoint.proceed();      // 프록시 대상 객체의 실제 메소드를 호출.  
+       
+        return ret;
+    }
 	
 
     /**
@@ -67,12 +86,12 @@ public class QueryLogWriter {
 
         String userId = tokenAuthentication.getClaimsByToken(token).getId();            // 해당 토큰안에 있는 id를 가져오는 메소드
         
-        Date current = new Date();
+        /*Date current = new Date();
         History history = new History(userId, current, queryInfo.getQuery());
         
         historyService.persist(history);
         
-        setConnectInfoByToken(userId);
+        setConnectInfoByToken(userId);*/
         
         System.out.println("Around queryLog 생성!");
         
@@ -86,13 +105,13 @@ public class QueryLogWriter {
      * @param Authorization
      * @return
      */
-    private void setConnectInfoByToken(String key) {
+   /* private void setConnectInfoByToken(String key) {
         
         ConnectInfo connectInfo = userInfoMap.getConnectInfos().get(key);
 
         int times = connectInfo.getQueryTimes();
         connectInfo.setQueryTimes(++times);
-    }
+    }*/
     
     
 	

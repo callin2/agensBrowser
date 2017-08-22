@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import net.bitnine.jwt.ConnectInfo;
+import net.bitnine.service.ClientConnectInfoService;
+import net.bitnine.domain.ClientConnectInfo;
 import net.bitnine.domain.dto.DBConnectionInfo;
 import net.bitnine.exception.InvalidTokenException;
 
@@ -25,7 +27,8 @@ import java.util.Base64;
 @Component
 public class TokenAuthentication {
 
-    @Autowired private ConnectionInfoMap connectionInfoMap;    
+//    @Autowired private ConnectionInfoMap connectionInfoMap;    
+    @Autowired private ClientConnectInfoService clientConnectInfoService;
     
     private final Key secret = MacProvider.generateKey(SignatureAlgorithm.HS256);			// 비밀키생성
     private final byte[] secretBytes = secret.getEncoded();
@@ -77,9 +80,9 @@ public class TokenAuthentication {
      * 상태가 INVALID 이거나  해당하는 ConnectInfo가 없으면 null을 반환
      */
     private String verifyToken(String key) {
-        ConnectInfo connectInfo;
+        ClientConnectInfo connectInfo = clientConnectInfoService.findById(key);
         
-        connectInfo = connectionInfoMap.getConnectInfos().get(key);
+//        connectInfo = connectionInfoMap.getConnectInfos().get(key);
         
         if ( (connectInfo == null) || ((connectInfo != null) && (connectInfo.getState() == State.INVALID)) ) {
             throw new InvalidTokenException();
