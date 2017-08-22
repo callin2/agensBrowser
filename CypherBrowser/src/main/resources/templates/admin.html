@@ -17,8 +17,13 @@
 		$('#retrieve').on("click", {URL : retrieveURL}, postAjax);
 		$('#invalidation').on("click", {URL : invalidationListURL}, postAjax);
 		$('#history').on("click", {URL : historyURL}, postAjax);
+		$('body').on('click', '#invalidButton', function () {
+			var arr = []; 
+			$('select[name="invalidCheck"] :selected').each(function(i, selected){ 
+			  arr[i] = $(selected).val(); 
+			});
+		});
 		
-
 		var token = readCookie("token");
 		
 		$("#authorization").val(token);
@@ -48,7 +53,31 @@
 			
 		});
 	}
-	
+
+	function postAjaxInvalid (event) {
+		event.preventDefault();
+		$.ajax({
+			type : 'post',
+			url : event.data.URL, 
+			headers : {
+				"Content-Type" : "application/json",
+				"X-HTTP-Method-Override" : "POST",
+	          	Authorization : $("#authorization").val()
+			},
+			dataType : 'text',
+		    data: JSON.stringify({			// data를 JSON.stringify 해서 post. controller에서 @RequestBody DBConnectionInfo dbConnectionInfo로 받음. 
+		    	query: $("#query").val(),
+		    }),
+			success : function (result) {
+				//var formattedJson = goodFormatReplaceJson(result);		// utils.js의 goodFormatReplaceJson함수를 호출헤서 json을 보기 좋은 포맷으로 변환
+				//$("#result").html(formattedJson);
+				//$("#result").html(result);
+				//$("#result").show();
+				jsonToHtml(result);
+			}
+			
+		});
+	}
 	function toHtml(data) {
 		var tbl_body = document.createElement("tbody");
 	    var odd_even = false;
@@ -66,17 +95,42 @@
 	
 	
 	function jsonToHtml(json) {
-		var jsonObj = $.parseJSON(json);
-        var html = '<table border="1">';
-        $.each(jsonObj, function(key, value){
+		var arr = JSON.parse(json);
+		//alert(obj);
+		/* var jsonObj = $.parseJSON(json);
+		alert(jsonObj); */
+        var html = "<div><table border='1'>";
+        var th = '<th></th>';
+        var td = '';
+        var index = 0;
+        $.each(arr, function(key, obj){
             html += '<tr>';
-            html += '<td>' + key + '</td>';
-            html += '<td>' + value + '</td>';
+
+            td += "<td><input type='checkbox' name='invalidCheck' /></td>";
+            $.each(obj, function(key, value){
+            	if (index === 0) {
+            		th += '<th>' + key + '</th>';
+            	}
+	            td += '<td>' + value + '</td>';
+            });
+
+            index++;
+            html += (th + '</tr>');
+            html += ('<tr>' + td);
             html += '</tr>';
+            th = '';
+            td = '';
         });
-        html += '</table>';
+        html += "</table><p style='text-align:center;'><input type='button' id='invalidButton' value='invalid' /></p></div>";
 
         $('#result').html(html);
+	}
+	
+	function postCheckboxes() {
+		var arr = []; 
+		$('select[name="invalidCheck"] :selected').each(function(i, selected){ 
+		  arr[i] = $(selected).val(); 
+		});
 	}
 	</script>
 </head>
