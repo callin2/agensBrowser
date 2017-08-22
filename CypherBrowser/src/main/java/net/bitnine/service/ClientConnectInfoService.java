@@ -1,5 +1,7 @@
 package net.bitnine.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,18 @@ public class ClientConnectInfoService {
     
     public ClientConnectInfo findById(String id) {
         return repository.findById(id).orElse(null);
+    }
+    
+    public List<ClientConnectInfo> findAll() {
+        return repository.findAll();
+    }
+    
+
+    public List<ClientConnectInfo> findValidAll() {
+        return repository.findValidAll();
+    }
+    
+    public void deleteById(String id) {
+        repository.deleteById(id);
     }
 }

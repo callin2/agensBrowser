@@ -8,40 +8,83 @@
 	<script src="/script/utils.js"></script>
 	<script>
 	$(function() {
-
+		var retrieveURL = "/api/v1/db/admin/retrieve";
+		var invalidationURL = "/api/v1/db/admin/invalidation";
+		var invalidationListURL = "/api/v1/db/admin/invalidationList";
+		var historyURL = "/api/v1/db/admin/history";
 		
 		// submitButton 버튼 클릭시 데이터를 url로 전송하고 토큰값을 json형태로 받아오는 ajax
-		$('#queryButton').on("click", function(event) {
-			event.preventDefault();
-			$.ajax({
-				type : 'post',
-				url : '/api/v1/db/query', 
-				headers : {
-					"Content-Type" : "application/json",
-					"X-HTTP-Method-Override" : "POST",
-		          	Authorization : $("#authorization").val()
-				},
-				dataType : 'text',
-			    data: JSON.stringify({			// data를 JSON.stringify 해서 post. controller에서 @RequestBody DBConnectionInfo dbConnectionInfo로 받음. 
-			    	query: $("#query").val(),
-			    }),
-				success : function (result) {
-					var formattedJson = goodFormatReplaceJson(result);		// utils.js의 goodFormatReplaceJson함수를 호출헤서 json을 보기 좋은 포맷으로 변환
-					$(".result").html(formattedJson);
-					$(".result").show();
-				}
-				
-			});
-		});
+		$('#retrieve').on("click", {URL : retrieveURL}, postAjax);
+		$('#invalidation').on("click", {URL : invalidationListURL}, postAjax);
+		$('#history').on("click", {URL : historyURL}, postAjax);
+		
+
+		var token = readCookie("token");
+		
+		$("#authorization").val(token);
 	});
+	function postAjax (event) {
+		event.preventDefault();
+		$.ajax({
+			type : 'post',
+			url : event.data.URL, 
+			headers : {
+				"Content-Type" : "application/json",
+				"X-HTTP-Method-Override" : "POST",
+	          	Authorization : $("#authorization").val()
+			},
+			dataType : 'text',
+			/* dataType : 'text',
+		    data: JSON.stringify({			// data를 JSON.stringify 해서 post. controller에서 @RequestBody DBConnectionInfo dbConnectionInfo로 받음. 
+		    	query: $("#query").val(),
+		    }), */
+			success : function (result) {
+				//var formattedJson = goodFormatReplaceJson(result);		// utils.js의 goodFormatReplaceJson함수를 호출헤서 json을 보기 좋은 포맷으로 변환
+				//$("#result").html(formattedJson);
+				//$("#result").html(result);
+				//$("#result").show();
+				jsonToHtml(result);
+			}
+			
+		});
+	}
 	
+	function toHtml(data) {
+		var tbl_body = document.createElement("tbody");
+	    var odd_even = false;
+	    $.each(data, function() {
+	        var tbl_row = tbl_body.insertRow();
+	        tbl_row.className = odd_even ? "odd" : "even";
+	        $.each(this, function(k , v) {
+	            var cell = tbl_row.insertCell();
+	            cell.appendChild(document.createTextNode(v.toString()));
+	        })        
+	        odd_even = !odd_even;               
+	    })
+	    $("#result").html(tbl_body);
+	}
+	
+	
+	function jsonToHtml(json) {
+		var jsonObj = $.parseJSON(json);
+        var html = '<table border="1">';
+        $.each(jsonObj, function(key, value){
+            html += '<tr>';
+            html += '<td>' + key + '</td>';
+            html += '<td>' + value + '</td>';
+            html += '</tr>';
+        });
+        html += '</table>';
+
+        $('#result').html(html);
+	}
 	</script>
 </head>
 <body>
 	<div class="navi">
 		<ul>
 			<li id="retrieve">Retrieve Session</li>
-			<li id="kill">Kill Session</li>
+			<li id="invalidation">Invalidation Session</li>
 			<li id="history">Retrieve Session History</li>
 		</ul>
 	</div>
@@ -51,7 +94,7 @@
 			<p><button id="queryButton">query</button></p>
 		</form>	
 	</div>
-	<div class="result"></div>
+	<div id="result"></div>
 </body>
 </html>
 
