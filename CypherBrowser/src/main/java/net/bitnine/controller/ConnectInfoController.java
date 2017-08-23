@@ -115,9 +115,10 @@ public class ConnectInfoController {
             throws  IOException, InvalidTokenException, QueryException, NamingException {
         
         for(String id: invalidSession.getSessionIdArr()) {
-//            service.deleteById(id);         // session kill 해야할 id를 db에서 삭제함
             ClientConnectInfo clientConnectInfo = service.findById(id);
-            clientConnectInfo.setState(State.INVALID);      // session kill 해야할 토큰아이디의 state를 invalid로 갱신.
+            if (clientConnectInfo.getState() == State.VALID) {
+            	clientConnectInfo.setState(State.INVALID);      // session kill 해야할 토큰아이디의 state를 invalid로 갱신.
+            }
         }
 
         JSONArray jsonArray = getValidAllIntoJsonArray();    // vaild 한 값만 jsonArray 형태로 가져옴.
