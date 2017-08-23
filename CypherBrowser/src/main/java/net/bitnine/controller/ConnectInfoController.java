@@ -85,7 +85,7 @@ public class ConnectInfoController {
     
     // 해당 id의 history를  JSONArray 형태로 가져옴.
     private JSONArray getHistoryIntoJsonObject(String id) {
-        ClientConnectInfo clientConnectInfo= service.findById(id);     // vaild 한 값만 가져옴.
+        ClientConnectInfo clientConnectInfo= service.findById(id);
         JSONArray jsonArray = new JSONArray();
 
         for(History history: clientConnectInfo.getHistories()) {
@@ -101,7 +101,7 @@ public class ConnectInfoController {
     
     
     /**
-     * 관리자가 session kill 하는 메소드
+     * 관리자가 session kill 하는 메소드. ajax headers로 전송되는 Authorization값을 @RequestHeader를 사용하여 처리.
      * @param Authorization
      * @param invalidSession
      * @return
@@ -114,11 +114,13 @@ public class ConnectInfoController {
     public @ResponseBody  JSONArray invalidation(@RequestHeader(value="Authorization") String Authorization, @RequestBody InvalidSession invalidSession) 
             throws  IOException, InvalidTokenException, QueryException, NamingException {
         
+    	// kill 해야할 id를 배열로 받아서
         for(String id: invalidSession.getSessionIdArr()) {
             ClientConnectInfo clientConnectInfo = service.findById(id);
             if (clientConnectInfo.getState() == State.VALID) {
             	clientConnectInfo.setState(State.INVALID);      // session kill 해야할 토큰아이디의 state를 invalid로 갱신.
             }
+            service.persist(clientConnectInfo);		// 갱신된 정보를 저장.
         }
 
         JSONArray jsonArray = getValidAllIntoJsonArray();    // vaild 한 값만 jsonArray 형태로 가져옴.
@@ -144,10 +146,9 @@ public class ConnectInfoController {
         return jsonArray;
     }
 
-    // DB에서 vaild 한 값만 jsonArray 형태로 가져옴.
+    // DB에서 session list를  jsonArray 형태 변환함.
     private JSONArray getValidAllIntoJsonArray() {
-//        List<ClientConnectInfo> clientConnectInfoList = service.findValidAll();     // vaild 한 값만 가져옴.
-        List<ClientConnectInfo> clientConnectInfoList = service.findAll();     // 전체값 가져옴.
+        List<ClientConnectInfo> clientConnectInfoList = service.findAllSortByConnectTime();     // 접속시간 오름차순으로 정렬된 전체값 가져옴.
         JSONArray jsonArray = new JSONArray();
         int index = 0;
         for(ClientConnectInfo clientConnectInfo : clientConnectInfoList) {

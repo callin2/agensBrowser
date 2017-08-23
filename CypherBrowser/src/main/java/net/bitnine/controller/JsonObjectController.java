@@ -34,12 +34,23 @@ public class JsonObjectController {
 
 	@Autowired private JsonObjectService service;
 
+	// query 요청 뷰
 	@RequestMapping(value="/query", method=RequestMethod.GET)
 	public String queryGet() throws  IOException, InvalidTokenException, QueryException, NamingException {
 	    
 		return "query";
 	}
 	
+	/**
+	 * query 요청 처리 메소드. ajax headers로 전달되는 사용자 토큰을 Authorization으로 받음.
+	 * @param Authorization
+	 * @param query
+	 * @return
+	 * @throws IOException
+	 * @throws InvalidTokenException
+	 * @throws QueryException
+	 * @throws NamingException
+	 */
 	@RequestMapping(value="/query", method=RequestMethod.POST)
     public @ResponseBody JSONObject queryPost(@RequestHeader(value="Authorization") String Authorization, @RequestBody QueryInfo query) 
             throws  IOException, InvalidTokenException, QueryException, NamingException {

@@ -6,6 +6,27 @@
 	<link rel="stylesheet" type="text/css" href="/css/basic.css" />
 	<script src="/script/jquery-3.2.1.min.js"></script>
 	<script src="/script/utils.js"></script>
+	
+</head>
+<body>
+	<!-- <div class="navi">
+		<ul>
+			<li id="retrieve">Retrieve Session</li>
+			<li id="invalidation">Invalidation Session</li>
+			<li id="history">Retrieve Session History</li>
+		</ul>
+	</div> -->
+	<div class="contents">
+		<form name = "queryForm" id="queryForm" action="/api/v1/db/query">
+			<p><label for="username">Authorization: </label><input type="text" id="authorization" class="authorization" name="authorization" /></p>
+		</form>	
+	</div>
+	<div id="resultRap">
+		<div id="result"></div>
+		<div id="historyResult"></div>
+		<div id="error"></div>
+	</div>
+	
 	<script>
 	var invalidTokenArr = [];		// 체크박스를 사용하여 Invalidation Session 하기위해 valid Token Id의 값들을 저장 
 	
@@ -15,6 +36,8 @@
 		var invalidationListURL = "/api/v1/db/admin/invalidationList";
 		var historyURL = "/api/v1/db/admin/history";
 		var historyDetailURL = "/api/v1/db/admin/historyDetail";
+		
+		$(window).on('load', {URL : invalidationListURL}, postAjax);
 		
 		// submitButton 버튼 클릭시 데이터를 url로 전송하고 토큰값을 json형태로 받아오는 ajax
 		$('#retrieve').on("click", {URL : retrieveURL}, postAjax);
@@ -92,7 +115,6 @@
 		    	sessionIdArr: checkedArr
 		    }),
 			success : function (result) {
-				console.log("result: ", result);
 				jsonToHtml(result);
 			},
 		    error: function (jqXHR, exception) {
@@ -249,25 +271,6 @@
 	    $("#result").html(tbl_body);
 	}
 	</script>
-</head>
-<body>
-	<div class="navi">
-		<ul>
-			<li id="retrieve">Retrieve Session</li>
-			<li id="invalidation">Invalidation Session</li>
-			<li id="history">Retrieve Session History</li>
-		</ul>
-	</div>
-	<div class="contents">
-		<form name = "queryForm" id="queryForm" action="/api/v1/db/query">
-			<p><label for="username">Authorization: </label><input type="text" id="authorization" class="authorization" name="authorization" /></p>
-		</form>	
-	</div>
-	<div id="resultRap">
-		<div id="result"></div>
-		<div id="historyResult"></div>
-		<div id="error"></div>
-	</div>
 </body>
 </html>
 

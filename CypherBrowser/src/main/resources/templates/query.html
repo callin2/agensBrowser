@@ -18,7 +18,7 @@
 				headers : {
 					"Content-Type" : "application/json",
 					"X-HTTP-Method-Override" : "POST",
-		          	Authorization : $("#authorization").val()
+		          	Authorization : $("#authorization").val()			// 발급된 토큰을 headers로 전송
 				},
 				dataType : 'text',
 			    data: JSON.stringify({			// data를 JSON.stringify 해서 post. controller에서 @RequestBody DBConnectionInfo dbConnectionInfo로 받음. 
@@ -28,7 +28,26 @@
 					var formattedJson = goodFormatReplaceJson(result);		// utils.js의 goodFormatReplaceJson함수를 호출헤서 json을 보기 좋은 포맷으로 변환
 					$(".result").html(formattedJson);
 					$(".result").show();
-				}
+				},
+			    error: function (jqXHR, exception) {
+			        var msg = '';
+			        if (jqXHR.status === 0) {
+			            msg = 'Not connect.\n Verify Network.';
+			        } else if (jqXHR.status == 404) {
+			            msg = 'Requested page not found. [404]';
+			        } else if (jqXHR.status == 500) {
+			            msg = 'Internal Server Error [500].';
+			        } else if (exception === 'parsererror') {
+			            msg = 'Requested JSON parse failed.';
+			        } else if (exception === 'timeout') {
+			            msg = 'Time out error.';
+			        } else if (exception === 'abort') {
+			            msg = 'Ajax request aborted.';
+			        } else {
+			            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+			        }
+			        $('#error').html(msg);
+			    }
 				
 			});
 		});
@@ -36,10 +55,7 @@
 		var token = readCookie("token");
 		
 		$("#authorization").val(token);
-	   /*  var token = '${token}';
-
-	    alert(token); */
-		//$(".result").html(token);
+		
 	    $(".q1").click(function() { $("#query").val(queryFirst);  });
 	    $(".q2").click(function() { $("#query").val(querySecond);  });
 	    $(".q3").click(function() { $("#query").val(queryThird);  });
@@ -66,6 +82,7 @@
 		</form>	
 	</div>
 	<div class="result"></div>
+	<div id="error"></div>
 </body>
 </html>
 

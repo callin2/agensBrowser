@@ -37,6 +37,11 @@ import net.bitnine.service.DatabaseService;
 import net.bitnine.util.GeneralUtils;
 import net.bitnine.util.IdGenerator;
  
+/**
+ * Spring Security Login 성공시 실행되는 핸들러
+ * @author cppco
+ *
+ */
 @Component
 public class RESTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
@@ -63,34 +68,31 @@ public class RESTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 	private boolean useReferer;
 	
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-//    private RedirectStrategy redirectStrategy = new CustomRedirectStrategy();
+
+	// Spring Security Login 성공시 실행되는 메소드
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
 
-//        DBConnectionInfo dbConnectionInfo = new DBConnectionInfo(request.getParameter("url"), request.getParameter("username"), request.getParameter("password"));
         String url = request.getParameter("url");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         
         try {
-            checkValidDataSource(url, username, password);
+            checkValidDataSource(url, username, password);		// 사용자로부터 전달받은 정보로 생성한 dataSource의 유효성을 체크
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }     // 사용자로부터 전달받은 dbconnect 정보로 생성한 dataSource의 유효성을 체크 
         
         String userId = idGenerator.generateId();            // id 생성
-    	String token = tokenAuthentication.generateToken(userId);
+    	String token = tokenAuthentication.generateToken(userId);		// token 생성
     	
     	System.out.println("token: " + token);
         saveConnectionInfo(userId, url, username, password);   // 사용자 db 접속정보를 application scope 객체 에 저장.
         clearAuthenticationAttributes(request);
         
         makeCookie(request, response, "token", token);
-        
-        
-        
         
         int intRedirectStrategy = decideRedirectStrategy (request, response);
 
@@ -108,23 +110,6 @@ public class RESTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 			useDefaultUrl(request, response);
 		}
     }
-    
-    void makeCookie(HttpServletRequest request, HttpServletResponse response, String cookieName, String cookieValue){
-        final Boolean useSecureCookie = false;
-        final int expiryTime = 60 * 60 * 24;  // 24h in seconds
-        final String cookiePath = "/";
-
-        Cookie cookie = new Cookie(cookieName, cookieValue);
-
-        cookie.setSecure(useSecureCookie);  // determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
-
-        cookie.setMaxAge(expiryTime);  // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
-
-        cookie.setPath(cookiePath);  // The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
-
-        response.addCookie(cookie);
-    }
-
     
     // 사용자로부터 전달받은 정보로 생성한 dataSource의 유효성을 체크
     private void checkValidDataSource(String url, String username, String password) throws SQLException {      
@@ -146,6 +131,23 @@ public class RESTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         connectInfo.setDbPassword (password);
         
         clientConnectInfoService.persist(connectInfo);      // DB에 저장.
+    }
+    
+    // 쿠키 생성 메소드
+    void makeCookie(HttpServletRequest request, HttpServletResponse response, String cookieName, String cookieValue){
+        final Boolean useSecureCookie = false;
+        final int expiryTime = 60 * 60 * 24;  // 24h in seconds
+        final String cookiePath = "/";
+
+        Cookie cookie = new Cookie(cookieName, cookieValue);
+
+        cookie.setSecure(useSecureCookie);  // determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
+
+        cookie.setMaxAge(expiryTime);  // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
+
+        cookie.setPath(cookiePath);  // The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
+
+        response.addCookie(cookie);
     }
 
 	private void useTargetUrl(HttpServletRequest request, HttpServletResponse response) throws IOException {

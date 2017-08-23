@@ -28,6 +28,21 @@ public class ClientConnectInfoService {
     public List<ClientConnectInfo> findValidAll() {
         return repository.findValidAll();
     }
+
+
+    public List<ClientConnectInfo> findAllSortByClientId() {
+        return repository.findAllSortByClientId();
+    }
+
+    public List<ClientConnectInfo> findAllSortByUserName() {
+        return repository.findAllSortByUserName();
+    }
+    
+    public List<ClientConnectInfo> findAllSortByConnectTime() {
+        return repository.findAllSortByConnectTime();
+    }
+    
+    
     
     public void deleteById(String id) {
         repository.deleteById(id);
