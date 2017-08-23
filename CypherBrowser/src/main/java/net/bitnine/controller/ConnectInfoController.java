@@ -3,6 +3,7 @@ package net.bitnine.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import javax.naming.NamingException;
 
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.bitnine.domain.ClientConnectInfo;
+import net.bitnine.domain.History;
 import net.bitnine.domain.dto.InvalidSession;
 import net.bitnine.domain.dto.QueryInfo;
 import net.bitnine.exception.InvalidTokenException;
@@ -68,42 +71,97 @@ public class ConnectInfoController {
         return clientConnectInfoList;
     }
 
-    
-    @RequestMapping(value="/invalidation", method=RequestMethod.POST)
-    public @ResponseBody  String invalidation(@RequestHeader(value="Authorization") String Authorization, @RequestBody InvalidSession invalidSession) 
+
+    // history 상세를 리턴
+    @RequestMapping(value="/historyDetail", method=RequestMethod.POST)
+    public @ResponseBody JSONArray historyDetail(@RequestHeader(value="Authorization") String Authorization, @RequestBody InvalidSession invalidSession) 
             throws  IOException, InvalidTokenException, QueryException, NamingException {
         
-        System.out.println("Authorization: " + Authorization);
+        JSONArray jsonArray = getHistoryIntoJsonObject(invalidSession.getSessionId());
         
-        for(String id: invalidSession.getSessionIdArr()) {
-            service.deleteById(id);
-        }
         
-        return "success";
+        return jsonArray;
     }
     
+    // 해당 id의 history를  JSONArray 형태로 가져옴.
+    private JSONArray getHistoryIntoJsonObject(String id) {
+        ClientConnectInfo clientConnectInfo= service.findById(id);     // vaild 한 값만 가져옴.
+        JSONArray jsonArray = new JSONArray();
+
+        for(History history: clientConnectInfo.getHistories()) {
+            JSONObject object = new JSONObject();
+            
+            object.put("query", history.getQuery());
+            object.put("request time", history.getRequestTime());
+            
+            jsonArray.add(object);
+        }
+        return jsonArray;
+    }
+    
+    
+    /**
+     * 관리자가 session kill 하는 메소드
+     * @param Authorization
+     * @param invalidSession
+     * @return
+     * @throws IOException
+     * @throws InvalidTokenException
+     * @throws QueryException
+     * @throws NamingException
+     */
+    @RequestMapping(value="/invalidation", method=RequestMethod.POST)
+    public @ResponseBody  JSONArray invalidation(@RequestHeader(value="Authorization") String Authorization, @RequestBody InvalidSession invalidSession) 
+            throws  IOException, InvalidTokenException, QueryException, NamingException {
+        
+        for(String id: invalidSession.getSessionIdArr()) {
+//            service.deleteById(id);         // session kill 해야할 id를 db에서 삭제함
+            ClientConnectInfo clientConnectInfo = service.findById(id);
+            clientConnectInfo.setState(State.INVALID);      // session kill 해야할 토큰아이디의 state를 invalid로 갱신.
+        }
+
+        JSONArray jsonArray = getValidAllIntoJsonArray();    // vaild 한 값만 jsonArray 형태로 가져옴.
+        
+        return jsonArray;
+    }
+    
+    /**
+     * valid list를 반환. 관리자가 session kill 하기위한 리스트
+     * @param Authorization
+     * @return
+     * @throws IOException
+     * @throws InvalidTokenException
+     * @throws QueryException
+     * @throws NamingException
+     */
     @RequestMapping(value="/invalidationList", method=RequestMethod.POST)
     public @ResponseBody  JSONArray invalidationList(@RequestHeader(value="Authorization") String Authorization) 
             throws  IOException, InvalidTokenException, QueryException, NamingException {
         
-        System.out.println("Authorization: " + Authorization);
-        List<ClientConnectInfo> clientConnectInfoList = service.findValidAll();
+        JSONArray jsonArray = getValidAllIntoJsonArray();    // vaild 한 값만 jsonArray 형태로 가져옴.
         
+        return jsonArray;
+    }
+
+    // DB에서 vaild 한 값만 jsonArray 형태로 가져옴.
+    private JSONArray getValidAllIntoJsonArray() {
+//        List<ClientConnectInfo> clientConnectInfoList = service.findValidAll();     // vaild 한 값만 가져옴.
+        List<ClientConnectInfo> clientConnectInfoList = service.findAll();     // 전체값 가져옴.
         JSONArray jsonArray = new JSONArray();
         int index = 0;
         for(ClientConnectInfo clientConnectInfo : clientConnectInfoList) {
-            JSONObject object = new JSONObject();
+            JSONObject object = new JSONObject(new TreeMap ());
 
             object.put("token id", clientConnectInfo.getClientid());
             object.put("connection time", clientConnectInfo.getConnTime());
             object.put("url", clientConnectInfo.getDbUrl());
             object.put("username", clientConnectInfo.getDbUsername());
             object.put("password", clientConnectInfo.getDbPassword());
+            object.put("state", clientConnectInfo.getState().name());
             
             jsonArray.add(index, object);
             index++;
         }
-        
         return jsonArray;
     }
 }

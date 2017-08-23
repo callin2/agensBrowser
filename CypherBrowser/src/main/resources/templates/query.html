@@ -45,8 +45,8 @@
 	    $(".q3").click(function() { $("#query").val(queryThird);  });
 	    
 	    var queryFirst = "match (a)<-[c:produced]-(b)  return id(a),label(a),a.title, id(b),label(b),b.name, label(c), id(c)  limit 10";	    
-	    var querySecond = "match+path%3D(a%3Aproduction)-%5B%5D-(b%3Acompany)+where+id(a)+%3D+'4.7058'+return+nodes(path)+as+NODES%2C+edges(path)+as+EDGES%2C+id(+(nodes(path))%5B1%5D+)+as+HEAD%2C+id(+(nodes(path))%5Blength(path)%2B1%5D+)+as+TAIL";
-	    var queryThird = "select * from member";
+	    var querySecond = "match path=(a:production {'title': 'Haunted House'})-[]-(b:company {'name': 'Ludo Studio'}) return path limit 10";
+	    var queryThird = "match (a:production {'kind': 'episode'}) return a limit 20";
 	});
 	</script>
 </head>

@@ -7,28 +7,46 @@
 	<script src="/script/jquery-3.2.1.min.js"></script>
 	<script src="/script/utils.js"></script>
 	<script>
+	var invalidTokenArr = [];		// 체크박스를 사용하여 Invalidation Session 하기위해 valid Token Id의 값들을 저장 
+	
 	$(function() {
 		var retrieveURL = "/api/v1/db/admin/retrieve";
 		var invalidationURL = "/api/v1/db/admin/invalidation";
 		var invalidationListURL = "/api/v1/db/admin/invalidationList";
 		var historyURL = "/api/v1/db/admin/history";
+		var historyDetailURL = "/api/v1/db/admin/historyDetail";
 		
 		// submitButton 버튼 클릭시 데이터를 url로 전송하고 토큰값을 json형태로 받아오는 ajax
 		$('#retrieve').on("click", {URL : retrieveURL}, postAjax);
 		$('#invalidation').on("click", {URL : invalidationListURL}, postAjax);
 		$('#history').on("click", {URL : historyURL}, postAjax);
-		$('body').on('click', '#invalidButton', function () {
-			var arr = []; 
-			$('select[name="invalidCheck"] :selected').each(function(i, selected){ 
-			  arr[i] = $(selected).val(); 
-			});
-		});
+		$('body').on('click', '#invalidButton', {URL : invalidationURL}, postAjax);
 		
 		var token = readCookie("token");
 		
 		$("#authorization").val(token);
+
+		$("body").on('click', '.tokenTd', {URL : historyDetailURL}, postAjaxHistory);
+		//$("body").on('click', '.tokenTd', temp);
 	});
-	function postAjax (event) {
+	
+	function temp() {
+
+		var row = $(this).parent().index() - 1;	// th 제목을 제외하기 위함.
+		var index = 0;
+		if (row >= 0) {
+			index = row / 2;
+		}
+		alert (index);
+	}
+	
+	// history 리스트를 가져오는 함수
+	function postAjaxHistory (event) {
+		var row = $(this).parent().index() - 1;	// th 제목을 제외하기 위함.
+		var index = 0;
+		if (row >= 0) {
+			index = row / 2;
+		}
 		event.preventDefault();
 		$.ajax({
 			type : 'post',
@@ -39,21 +57,67 @@
 	          	Authorization : $("#authorization").val()
 			},
 			dataType : 'text',
-			/* dataType : 'text',
 		    data: JSON.stringify({			// data를 JSON.stringify 해서 post. controller에서 @RequestBody DBConnectionInfo dbConnectionInfo로 받음. 
-		    	query: $("#query").val(),
-		    }), */
+		    	sessionId: invalidTokenArr[index]
+		    }),
 			success : function (result) {
-				//var formattedJson = goodFormatReplaceJson(result);		// utils.js의 goodFormatReplaceJson함수를 호출헤서 json을 보기 좋은 포맷으로 변환
-				//$("#result").html(formattedJson);
-				//$("#result").html(result);
-				//$("#result").show();
-				jsonToHtml(result);
+				jsonToHistoryHtml(result);
 			}
-			
+		});
+	}
+	
+	// sessionList 테이블의 체크박스에서 체크된 token id 값을 배열로 저장하여 리턴
+	function getCheckboxValues() {
+		var checkedValues = [];
+		$('#sessionList :checked').each(function() {
+			checkedValues.push(invalidTokenArr[$(this).val()]);
+		});
+		return checkedValues;
+	}
+	
+	function postAjax (event) {
+		event.preventDefault();
+
+		var checkedArr = getCheckboxValues();		// 체크박스를 사용하여 Invalidation Session 하기위해 valid Token Id의 값들을 저장 
+		$.ajax({
+			type : 'post',
+			url : event.data.URL, 
+			headers : {
+				"Content-Type" : "application/json",
+				"X-HTTP-Method-Override" : "POST",
+	          	Authorization : $("#authorization").val()
+			},
+			dataType : 'text',
+		    data: JSON.stringify({			// data를 JSON.stringify 해서 post. controller에서 @RequestBody DBConnectionInfo dbConnectionInfo로 받음. 
+		    	sessionIdArr: checkedArr
+		    }),
+			success : function (result) {
+				console.log("result: ", result);
+				jsonToHtml(result);
+			},
+		    error: function (jqXHR, exception) {
+		        var msg = '';
+		        if (jqXHR.status === 0) {
+		            msg = 'Not connect.\n Verify Network.';
+		        } else if (jqXHR.status == 404) {
+		            msg = 'Requested page not found. [404]';
+		        } else if (jqXHR.status == 500) {
+		            msg = 'Internal Server Error [500].';
+		        } else if (exception === 'parsererror') {
+		            msg = 'Requested JSON parse failed.';
+		        } else if (exception === 'timeout') {
+		            msg = 'Time out error.';
+		        } else if (exception === 'abort') {
+		            msg = 'Ajax request aborted.';
+		        } else {
+		            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+		        }
+		        $('#error').html(msg);
+		    }
 		});
 	}
 
+	// 유효한 session 리스트를 가져오는 함수
 	function postAjaxInvalid (event) {
 		event.preventDefault();
 		$.ajax({
@@ -69,15 +133,107 @@
 		    	query: $("#query").val(),
 		    }),
 			success : function (result) {
-				//var formattedJson = goodFormatReplaceJson(result);		// utils.js의 goodFormatReplaceJson함수를 호출헤서 json을 보기 좋은 포맷으로 변환
-				//$("#result").html(formattedJson);
-				//$("#result").html(result);
-				//$("#result").show();
 				jsonToHtml(result);
 			}
-			
 		});
 	}
+	
+
+	// history json을 table로 변환
+	function jsonToHistoryHtml(json) {
+		var arr = JSON.parse(json);
+		
+        var html = "<div><table border='1' id='historyList'>";
+        var index = 0;
+        $.each(arr, function(key, obj){
+            html += "<tr>";
+            var th = "";
+            var td = "";
+
+            var queryTh = "",  requestTimeTh = "", urlTh = "";
+            var queryTd = "",  requestTimeTd = "", urlTd = "";
+            
+            $.each(obj, function(key, value) {
+            	// make th
+            	if (index === 0) {
+            		if (key === "query")					queryTh += "<th>" + key + "</th>";
+                	else if (key === "request time")	requestTimeTh += "<th>" + key + "</th>";
+            	}
+            	// make td
+            	if (key === "query") 						queryTd += '<td>' + value + '</td>';
+            	else if (key === "request time")   requestTimeTd += '<td>' + value + '</td>';
+            });
+    		th +=  queryTh + requestTimeTh;
+            td +=  queryTd + requestTimeTd;
+
+            if (index === 0) {
+            	html += th + "</tr>";
+            }
+            html += "<tr>" + td + "</tr>";
+            index++;
+        });
+        html += "</table></div>";
+
+        $("#historyResult").html(html);
+	}
+	
+	
+	
+	function jsonToHtml(json) {
+		var arr = JSON.parse(json);
+		
+        var html = "<div><table border='1' id='sessionList'>";
+        var index = 0;
+        $.each(arr, function(key, obj){
+            html += "<tr>";
+            var th = "<th></th>";
+            var td = "<td><input type='checkbox' name='invalidCheck' value='" + index + "' /></td>";
+
+            var tokenidTh = "",  connTimeTh = "", urlTh = "", usernameTh = "", passwordTh = "", stateTh = "";
+            var tokenidTd = "",  connTimeTd = "", urlTd = "", usernameTd = "", passwordTd = "", stateTd = "";
+            
+            $.each(obj, function(key, value) {
+            	// make th
+            	if (index === 0) {
+            		if (key === "token id")					tokenidTh += "<th>" + key + "</th>";
+                	else if (key === "connection time")	connTimeTh += "<th>" + key + "</th>";
+                	else if (key === "url")						urlTh += "<th>" + key + "</th>";
+                	else if (key === "username")			usernameTh += "<th>" + key + "</th>";
+                	else if (key === "password")				passwordTh += "<th>" + key + "</th>";
+                	else if (key === "state")					stateTh += "<th>" + key + "</th>";
+            	}
+            	// make td
+            	if (key === "token id") {
+            		invalidTokenArr [index] = value;
+            		tokenidTd += "<td class='tokenTd'>" + value + "</td>";
+            	}
+            	else if (key === "connection time")   connTimeTd += '<td>' + value + '</td>';
+            	else if (key === "url")   					urlTd += '<td>' + value + '</td>';
+            	else if (key === "username")   			usernameTd += '<td>' + value + '</td>';
+            	else if (key === "password")  			passwordTd += '<td>' + value + '</td>';
+            	else if (key === "state")					stateTd += "<th>" + value + "</th>";
+            });
+    		th +=  tokenidTh + connTimeTh + urlTh + usernameTh + passwordTh + stateTh;
+            td +=  tokenidTd + connTimeTd + urlTd + usernameTd + passwordTd + stateTd;
+
+            if (index === 0) {
+            	html += th + "</tr>";
+            }
+            html += "<tr>" + td + "</tr>";
+            index++;
+        });
+        html += "</table><p style='text-align:center;'><input type='button' id='invalidButton' value='invalid' /></p></div>";
+
+        $("#result").html(html);
+	}
+	
+	function postCheckboxes() {
+		var arr = []; 
+		$('select[name="invalidCheck"] :selected').each(function(i, selected){ 
+		  arr[i] = $(selected).val(); 
+		});
+	}
+
 	function toHtml(data) {
 		var tbl_body = document.createElement("tbody");
 	    var odd_even = false;
@@ -92,46 +248,6 @@
 	    })
 	    $("#result").html(tbl_body);
 	}
-	
-	
-	function jsonToHtml(json) {
-		var arr = JSON.parse(json);
-		//alert(obj);
-		/* var jsonObj = $.parseJSON(json);
-		alert(jsonObj); */
-        var html = "<div><table border='1'>";
-        var th = '<th></th>';
-        var td = '';
-        var index = 0;
-        $.each(arr, function(key, obj){
-            html += '<tr>';
-
-            td += "<td><input type='checkbox' name='invalidCheck' /></td>";
-            $.each(obj, function(key, value){
-            	if (index === 0) {
-            		th += '<th>' + key + '</th>';
-            	}
-	            td += '<td>' + value + '</td>';
-            });
-
-            index++;
-            html += (th + '</tr>');
-            html += ('<tr>' + td);
-            html += '</tr>';
-            th = '';
-            td = '';
-        });
-        html += "</table><p style='text-align:center;'><input type='button' id='invalidButton' value='invalid' /></p></div>";
-
-        $('#result').html(html);
-	}
-	
-	function postCheckboxes() {
-		var arr = []; 
-		$('select[name="invalidCheck"] :selected').each(function(i, selected){ 
-		  arr[i] = $(selected).val(); 
-		});
-	}
 	</script>
 </head>
 <body>
@@ -145,10 +261,13 @@
 	<div class="contents">
 		<form name = "queryForm" id="queryForm" action="/api/v1/db/query">
 			<p><label for="username">Authorization: </label><input type="text" id="authorization" class="authorization" name="authorization" /></p>
-			<p><button id="queryButton">query</button></p>
 		</form>	
 	</div>
-	<div id="result"></div>
+	<div id="resultRap">
+		<div id="result"></div>
+		<div id="historyResult"></div>
+		<div id="error"></div>
+	</div>
 </body>
 </html>
 

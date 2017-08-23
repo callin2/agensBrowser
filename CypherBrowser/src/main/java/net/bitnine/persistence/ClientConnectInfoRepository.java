@@ -10,7 +10,7 @@ import net.bitnine.domain.ClientConnectInfo;
 
 public interface ClientConnectInfoRepository extends JpaRepository<ClientConnectInfo, String> {
     
-    @Query(value = "SELECT * FROM conn_info c, history h WHERE c.state = 'VALID' and c.clientid = h.token_id",
+    @Query(value = "SELECT * FROM CONN_INFO WHERE state = 'VALID'",
                     nativeQuery=true
     )
     public List<ClientConnectInfo> findValidAll();
