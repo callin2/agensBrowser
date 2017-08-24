@@ -29,39 +29,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 	    http.csrf().disable();
-	    
-        http.authorizeRequests().antMatchers("/h2console/**").permitAll();
-        
-        http.authorizeRequests().antMatchers("/guest/**").permitAll();
-        
-        http.authorizeRequests().antMatchers("/manager/**").hasRole("MANAGER");
-        
-        http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
-
-        http.headers().frameOptions().disable();
-        
-
-		
-		http.authorizeRequests().antMatchers("/api/v1/db/login").permitAll();
-
-        http.authorizeRequests().antMatchers("/api/v1/db/query").hasAnyRole("USER", "ADMIN");
-        
-        http.authorizeRequests().antMatchers("/api/v1/db/admin").hasRole("ADMIN");
-
-        http.formLogin().loginPage("/login").successHandler(authenticationSuccessHandler);
-//        http.formLogin().loginPage("/login").successHandler(loginSuccessHandler);
-//        http.formLogin().loginPage("/login").successHandler(successHandler());
-
-        //http.formLogin().loginPage("/api/v1/db/testLogin");
-		
-		
-
-        
-        http.exceptionHandling().accessDeniedPage("/accessDenied");
-        
-        http.logout().logoutUrl("/logout").invalidateHttpSession(true);
-        
-        http.userDetailsService(securityUserService);
+	        
+        http.authorizeRequests().antMatchers("/h2console/**").permitAll()
+        .and()
+            .headers().frameOptions().disable()
+        .and()
+            .authorizeRequests().antMatchers("/api/v1/db/login").permitAll()            // login permit all
+		    .antMatchers("/api/v1/db/query").hasAnyRole("USER", "ADMIN")            //  권한 USER, AMDIN 만 접근
+            .antMatchers("/api/v1/db/admin").hasRole("ADMIN")                           //  권한 AMDIN 만 접근
+        .and()
+            .formLogin().loginPage("/login").successHandler(authenticationSuccessHandler)       // 권한이 없을 경우 /login 으로 이동. 인증 성공시 authenticationSuccessHandler 핸들러 실행. 여기서 토큰 발급
+        .and()
+            .exceptionHandling().accessDeniedPage("/accessDenied")                  // 인증 후 권한이 없는 페이지 접근시
+        .and()
+            .logout().logoutUrl("/logout").invalidateHttpSession(true)
+        .and()
+            .userDetailsService(securityUserService);
 	}
     
     /*@Bean

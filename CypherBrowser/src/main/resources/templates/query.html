@@ -26,8 +26,8 @@
 			    }),
 				success : function (result) {
 					var formattedJson = goodFormatReplaceJson(result);		// utils.js의 goodFormatReplaceJson함수를 호출헤서 json을 보기 좋은 포맷으로 변환
-					$(".result").html(formattedJson);
-					$(".result").show();
+					$("#result").html(formattedJson);
+					$("#result").show();
 				},
 			    error: function (jqXHR, exception) {
 			        var msg = '';
@@ -56,9 +56,9 @@
 		
 		$("#authorization").val(token);
 		
-	    $(".q1").click(function() { $("#query").val(queryFirst);  });
-	    $(".q2").click(function() { $("#query").val(querySecond);  });
-	    $(".q3").click(function() { $("#query").val(queryThird);  });
+	    $(".q1").click(function() { $("#query").val(queryFirst);  $("#result").empty();  });
+	    $(".q2").click(function() { $("#query").val(querySecond);  $("#result").empty();  });
+	    $(".q3").click(function() { $("#query").val(queryThird);  $("#result").empty();  });
 	    
 	    var queryFirst = "match (a)<-[c:produced]-(b)  return id(a),label(a),a.title, id(b),label(b),b.name, label(c), id(c)  limit 10";	    
 	    var querySecond = "match path=(a:production {'title': 'Haunted House'})-[]-(b:company {'name': 'Ludo Studio'}) return path limit 10";
@@ -81,7 +81,7 @@
 			<p><button id="queryButton">query</button></p>
 		</form>	
 	</div>
-	<div class="result"></div>
+	<div id="result"></div>
 	<div id="error"></div>
 </body>
 </html>

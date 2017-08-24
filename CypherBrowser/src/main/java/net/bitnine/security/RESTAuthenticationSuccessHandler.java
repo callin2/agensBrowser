@@ -38,20 +38,16 @@ import net.bitnine.util.GeneralUtils;
 import net.bitnine.util.IdGenerator;
  
 /**
- * Spring Security Login 성공시 실행되는 핸들러
+ * Spring Security Login 성공시 실행되는 핸들러. 출처 http://zgundam.tistory.com/52 포함.
  * @author cppco
  *
  */
 @Component
 public class RESTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-//	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired private DatabaseService databaseService;
     
     @Autowired private ClientConnectInfoService clientConnectInfoService;
-
-    @Autowired private ConnectionInfoMap connectionInfoMap;    
     
     @Autowired private TokenAuthentication tokenAuthentication;
     
@@ -78,24 +74,24 @@ public class RESTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         
+        // 사용자로부터 전달받은 정보로 생성한 dataSource의 유효성을 체크
         try {
-            checkValidDataSource(url, username, password);		// 사용자로부터 전달받은 정보로 생성한 dataSource의 유효성을 체크
+            checkValidDataSource(url, username, password);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-        }     // 사용자로부터 전달받은 dbconnect 정보로 생성한 dataSource의 유효성을 체크 
+        } 
         
         String userId = idGenerator.generateId();            // id 생성
     	String token = tokenAuthentication.generateToken(userId);		// token 생성
     	
-    	System.out.println("token: " + token);
         saveConnectionInfo(userId, url, username, password);   // 사용자 db 접속정보를 application scope 객체 에 저장.
         clearAuthenticationAttributes(request);
         
-        makeCookie(request, response, "token", token);
+        makeCookie(request, response, "token", token);      // 토큰을 쿠키에 저장.
         
         int intRedirectStrategy = decideRedirectStrategy (request, response);
 
+        // 전략에 따라 redirect
 		switch (intRedirectStrategy) {
 		case 1:
 			useTargetUrl(request, response);

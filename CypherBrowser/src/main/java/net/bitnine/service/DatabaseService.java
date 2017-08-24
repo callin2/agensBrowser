@@ -17,6 +17,31 @@ import net.bitnine.util.JDBCTutorialUtilities;
 @Service
 public class DatabaseService {
     
+    
+    public DataSource createDataSource (String url, String username, String password) {
+        BasicDataSource dataSource = new BasicDataSource();
+        
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+
+        System.out.println("dataSource: " + dataSource);
+        return dataSource;
+    }
+    
+    public void checkValidDataSource(String url, String username, String password) throws SQLException {
+        try {
+            createDataSource(url, username, password).getConnection();
+        }
+        catch (SQLException ex) {
+            JDBCTutorialUtilities.printSQLException(ex);
+            ex.printStackTrace();
+            throw new QueryException (JDBCTutorialUtilities.getSQLState(ex), ex);       // custom exception 사용.
+        }           
+    }
+    
+
 
     public void createPGPoolingDataSource (DBConnectionInfo dataSourceDTO, String tokenString) throws NamingException, QueryException {
 
@@ -66,66 +91,4 @@ public class DatabaseService {
 //        new InitialContext().rebind("java:comp/env/jdbc/" + tokenString, dataSource);
 //        new InitialContext().bind(tokenString, dataSource);
     }
-    
-    public DataSource createDataSource (String url, String username, String password) {
-        BasicDataSource dataSource = new BasicDataSource();
-        
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-
-        System.out.println("dataSource: " + dataSource);
-        return dataSource;
-    }
-    
-    public void checkValidDataSource(String url, String username, String password) throws SQLException {
-        try {
-            createDataSource(url, username, password).getConnection();
-        }
-        catch (SQLException ex) {
-            JDBCTutorialUtilities.printSQLException(ex);
-            ex.printStackTrace();
-            throw new QueryException (JDBCTutorialUtilities.getSQLState(ex), ex);       // custom exception 사용.
-        }           
-    }
-	/*public DataSource createDataSource (DBConnectionInfo dbConnectionInfo) {
-		BasicDataSource dataSource = new BasicDataSource();
-		
-		dataSource.setDriverClassName("org.postgresql.Driver");
-		dataSource.setUrl(dbConnectionInfo.getUrl());
-		dataSource.setUsername(dbConnectionInfo.getUsername());
-		dataSource.setPassword(dbConnectionInfo.getPassword());
-
-        System.out.println("dataSource: " + dataSource);
-		return dataSource;
-	}
-
-	public void checkValidDataSource(DBConnectionInfo dbConnectionInfo) throws SQLException {
-		try {
-			createDataSource(dbConnectionInfo).getConnection();
-    	}
-    	catch (SQLException ex) {
-            JDBCTutorialUtilities.printSQLException(ex);
-            ex.printStackTrace();
-            throw new QueryException (JDBCTutorialUtilities.getSQLState(ex), ex);       // custom exception 사용.
-    	}			
-	}
-	*/
-	/*public void createDataSource(DataSourceDTO dto) throws NamingException {
-	    PGPoolingDataSource dataSource = new PGPoolingDataSource();
-	    source.setDataSourceName("A Data Source");
-	    source.setServerName("localhost");
-	    source.setDatabaseName("test");
-	    source.setUser("testuser");
-	    source.setPassword("testpassword");
-	    source.setMaxConnections(10);
-
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl(dto.getUrl());
-        dataSource.setUser(dto.getUsername());
-        dataSource.setPassword(dto.getPassword());
-        
-	    new InitialContext().rebind("DataSource", source);
-	}*/
 }

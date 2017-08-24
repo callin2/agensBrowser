@@ -69,9 +69,7 @@ public class JsonObjectRepository {
         PgResultSet pgResultSet = null;
         PgStatement pgstmt = null;
         
-//        JSONObject mapRet = new JSONObject();
         JSONObject mapRet = new JSONObject(new TreeMap ());     // 리턴할 jsonObject
-//      JSONObject mapRet = null;
                 
         int maxRows = Integer.parseInt(propertiesService.getSetMax());      // query 결과값 limit set. setResultRows 메소드 사용. 기본값은 application.properties 파일의 setMax: 10
         
@@ -79,8 +77,6 @@ public class JsonObjectRepository {
             if (dataSource.getConnection().isWrapperFor(PgConnection.class)) {
                 pgConnection = dataSource.getConnection().unwrap(PgConnection.class);       // dataSource에서 PgConnection를 가져옴.
             }
-            
-//            pgConnection = (PgConnection) dataSource.getConnection();
 	        
 	        pgstmt =  (PgStatement) pgConnection.createStatement();	        
 	        pgstmt.setMaxRows(maxRows);			// 반환하는 row 수를 maxRows 값으로 설정함. maxRows값은 application.properties의 setMax 값. 관리자가 런타임 수정가능
@@ -141,9 +137,6 @@ public class JsonObjectRepository {
 		JSONParser parser = new JSONParser();
 		String columnTypeName = resultSetMetaData.getColumnTypeName(cnt);     // 이 메소드를 호출하는 부분이 반복문임. 해당하는 count를 전달받아 columnTypeName 반환.
 		String columnName = resultSetMetaData.getColumnLabel(cnt);
-		
-//		System.out.println("columnTypeName: " + columnTypeName);
-
 		switch (columnTypeName) {
 
 		// number에는 int, long, double, float 등

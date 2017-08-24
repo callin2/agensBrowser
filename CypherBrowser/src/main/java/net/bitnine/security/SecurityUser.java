@@ -11,6 +11,11 @@ import org.springframework.security.core.userdetails.User;
 import net.bitnine.domain.Member;
 import net.bitnine.domain.MemberRole;
 
+/**
+ * DB에 저장된 Member 정보를 사용하여 userdetails 구현한 User를 생성.  출처 : 스타트 스프링 부트
+ * @author lionkim
+ *
+ */
 public class SecurityUser extends User {
 
 	/**
@@ -24,14 +29,15 @@ public class SecurityUser extends User {
 	
 	public SecurityUser (Member member) {
 		
-		super (member.getUsername(), member.getPassword(), makeGrantedAuthority(member.getRole()));
+		super (member.getUsername(), member.getPassword(), makeGrantedAuthority(member.getRole()));   // username, password, 권한을 super class 생성자로 전달.
 		this.member = member;
 	}
 
+	// 권한들을 반환하는 메소드
 	private static Collection<? extends GrantedAuthority> makeGrantedAuthority(MemberRole role) {
 		List<GrantedAuthority> list = new ArrayList<>();
 		
-		list.add(new SimpleGrantedAuthority(ROLE_PREFIX + role.getRole()));
+		list.add(new SimpleGrantedAuthority(ROLE_PREFIX + role.getRole()));       // "ROLE_" prefix를 더하여 권한 list에 저장.
 		
 		return list;
 	}

@@ -27,7 +27,6 @@ import java.util.Base64;
 @Component
 public class TokenAuthentication {
 
-//    @Autowired private ConnectionInfoMap connectionInfoMap;    
     @Autowired private ClientConnectInfoService clientConnectInfoService;
     
     private final Key secret = MacProvider.generateKey(SignatureAlgorithm.HS256);			// 비밀키생성
@@ -75,14 +74,12 @@ public class TokenAuthentication {
         return claims;
     }
     /**
-     * ConnectionInfoMap의 UserInfos에서 key에 해당하는 ConnectInfo를 찾아서 상태를 확인하여 
+     * DB ClientConnectInfo에서 key에 해당하는 ConnectInfo를 찾아서 상태를 확인하여 
      * 상태가 VALID일 경우 해당하는 ConnectInfo를 반환.
      * 상태가 INVALID 이거나  해당하는 ConnectInfo가 없으면 null을 반환
      */
     private String verifyToken(String key) {
         ClientConnectInfo connectInfo = clientConnectInfoService.findById(key);
-        
-//        connectInfo = connectionInfoMap.getConnectInfos().get(key);
         
         if ( (connectInfo == null) || ((connectInfo != null) && (connectInfo.getState() == State.INVALID)) ) {
             throw new InvalidTokenException();
