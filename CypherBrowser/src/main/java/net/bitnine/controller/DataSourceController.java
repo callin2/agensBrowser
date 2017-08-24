@@ -29,7 +29,7 @@ import net.bitnine.util.IdGenerator;
 /**
  * 사용자가 전송한 정보로 dataSource를 만드는 컨트롤러
  * 세션에 dataSource를 저장, 해제
- * @author cppco
+ * @author 김형우
  *
  */
 @RestController
@@ -39,8 +39,7 @@ public class DataSourceController {
     public static final String DATASOURCE = "dataSource";
     public static final String ADMIN = "agraph";
     public static final String USER = "test01";
-	
-	@Autowired private DatabaseService databaseService;
+
 
     @Autowired private TokenAuthentication tokenAuthentication;
 
@@ -92,35 +91,6 @@ public class DataSourceController {
             return "redirect:login";
         }*/
         
-    }
-
-
-	
-    
-    // 사용자로부터 전달받은 정보로 생성한 dataSource의 유효성을 체크
-  /*  private void checkValidDataSource(DBConnectionInfo dbConnectionInfo) throws SQLException {    	
-    	databaseService.checkValidDataSource(dbConnectionInfo);	
-	}*/
-
-
-    // 사용자 db 접속정보를 application scope 객체 에 저장.
-	/*private void saveConnectionInfo(String id, DBConnectionInfo dbConnectionInfo) {
-        
-        ConnectInfo connectInfo = new ConnectInfo();       // 새로운 ConnectInfo 객체를 생성.        
-        
-//        connectInfo.setToken (id);           
-        connectInfo.setConnetTime (stringCurrentTime());       // 현재 시간을 저장. 
-        connectInfo.setQueryTimes(0);
-        connectInfo.setState(State.VALID);
-        connectInfo.setDbConnectionInfo(dbConnectionInfo);
-        
-        connectionInfoMap.getConnectInfos().put(id, connectInfo);      // connectInfos의 connectInfoList에 ConnectInfo 객체를 저장.        
-	}*/
-	
-	// 현재 시간을 String형으로 반환.
-    private String stringCurrentTime() {
-        String timeFormat = "yyyy-MM-dd HH:mm:ss";        
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(timeFormat));
     }
     
 	// Connect 해제

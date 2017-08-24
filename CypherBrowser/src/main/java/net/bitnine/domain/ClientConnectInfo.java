@@ -18,6 +18,11 @@ import javax.persistence.Table;
 
 import net.bitnine.jwt.State;
 
+/**
+ * JPA를 통해 회원 세션 정보를 저장하는 엔티티
+ * @author 김형우
+ *
+ */
 @Entity
 @Table(name = "conn_info")
 public class ClientConnectInfo {

@@ -11,6 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+/**
+ * JPA를 통해 회원정보를 저장하는 엔티티
+ * @author 김형우
+ *
+ */
 @Entity
 public class Member {
 

@@ -1,5 +1,10 @@
 package net.bitnine.domain;
 
+/**
+ * Query결과의 meta 정보를 가져오는 클래스
+ * @author 김형우
+ *
+ */
 public class DataMeta {	
 	String columnLabel;
 	String columnTypeName;

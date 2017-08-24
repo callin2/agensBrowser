@@ -8,6 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * 
+ * JPA를 통해 회원 쿼리 history 정보를 저장하는 엔티티
+ * @author 김형우
+ *
+ */
 @Entity
 public class History {
 	

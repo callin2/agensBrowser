@@ -7,6 +7,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * 
+ * JPA를 통해 회원권한정보를 저장하는 엔티티
+ * @author 김형우
+ *
+ */
 @Entity
 public class MemberRole {
 
