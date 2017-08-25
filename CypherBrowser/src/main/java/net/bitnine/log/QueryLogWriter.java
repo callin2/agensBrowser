@@ -77,38 +77,16 @@ public class QueryLogWriter {
         
         Object ret = JoinPoint.proceed();      // 프록시 대상 객체의 실제 메소드를 호출.  
 
-//        String key = tokenAuthentication.getIdInToken(token);       // 해당 토큰에서 key를 가져옴        
 
         String userId = tokenAuthentication.getClaimsByToken(token).getId();            // 해당 토큰안에 있는 id를 가져오는 메소드
         
-        /*Date current = new Date();
-        History history = new History(userId, current, queryInfo.getQuery());
-        
-        historyService.persist(history);
-        
-        setConnectInfoByToken(userId);*/
-        
+
         System.out.println("Around queryLog 생성!");
         
         return ret;
     }
 
-    /**
-     * connectInfos의 connectInfoList를 순환하며 connectInfo.getToken() 과 인자로 받은 token을 비교해서
-     * 동일했을경우 해당 connectInfo 객체를 반환.
-     * ConnectInfos connectInfos :  객체 Scope("application"). 애플리케이션에 하나만 생성됨.
-     * @param Authorization
-     * @return
-     */
-   /* private void setConnectInfoByToken(String key) {
-        
-        ConnectInfo connectInfo = userInfoMap.getConnectInfos().get(key);
 
-        int times = connectInfo.getQueryTimes();
-        connectInfo.setQueryTimes(++times);
-    }*/
-    
-    
 	
 	protected String getUserIPAddress(HttpServletRequest request) {
 		return request.getRemoteAddr();
@@ -125,33 +103,6 @@ public class QueryLogWriter {
      * @throws Throwable
      */
     
-    /*@Around("connectInfo()")
-    public Object connectAdvice (ProceedingJoinPoint JoinPoint) throws Throwable {  
-        Object ret = JoinPoint.proceed();      // 프록시 대상 객체의 실제 메소드를 호출.
-
-        DBConnectionInfo dbConnectionInfo = (DBConnectionInfo) JoinPoint.getArgs()[0];     // 대상 메소드의 1번째 인자. DBConnectionInfo
-        
-        ConnectInfo connectInfo = new ConnectInfo();       // 새로운 ConnectInfo 객체를 생성.
-        
-        JSONObject jsonObject = (JSONObject) ret;
-        String token = (String) jsonObject.get("token");
-        
-        String key = tokenAuthentication.getIdInToken(token);     // 해당 token안에 저장된 id를 가져옴
-        
-        if (jsonObject.get("message") == CONNECT_SUCCESS) {  // Db Connect가 성공했을 때 실행
-            connectInfo.setToken (token);           
-//          connectInfo.setConnetTime (stringCurrentTime());       // 현재 시간을 저장. 
-            connectInfo.setQueryTimes(0);
-            connectInfo.setState(State.VALID);
-            connectInfo.setDbConnectionInfo(dbConnectionInfo);
-        }
-        
-        userInfoMap.getUserInfos().put(key, connectInfo);      // connectInfos의 connectInfoList에 ConnectInfo 객체를 저장.
-//        userInfoMap.getConnectInfoList().add (connectInfo);     // connectInfos의 connectInfoList에 ConnectInfo 객체를 저장.
-        
-        System.out.println("Around connectInfo 생성!");
-        return ret;
-    }*/
 
 
 }

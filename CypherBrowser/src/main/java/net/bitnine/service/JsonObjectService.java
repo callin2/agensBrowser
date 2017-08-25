@@ -40,8 +40,7 @@ public class JsonObjectService {
 
         ClientConnectInfo clientConnectInfo = clientConnectInfoService.findById(userId);
         
-//        DBConnectionInfo dbConnectionInfo = new DBConnectionInfo(clientConnectInfo.getDbUrl(), clientConnectInfo.getDbUsername(), clientConnectInfo.getDbPassword());
-                
+
         DataSource dataSource = databaseService.createDataSource(clientConnectInfo.getDbUrl(), clientConnectInfo.getDbUsername(), clientConnectInfo.getDbPassword());
         
         System.out.println("dataSource: " + dataSource);
@@ -65,16 +64,11 @@ public class JsonObjectService {
         
         History history = new History(userId, generalUtils.stringCurrentTime(), query);
         
-        /*List<History> histories = clientConnectInfo.getHistories();
-        histories.add(history);
-        
-        clientConnectInfo.setHistories(histories);*/
-        
+
         clientConnectInfo.getHistories().add(history);
         
         clientConnectInfoService.persist(clientConnectInfo);
 
-        //historyService.persist(history);
     }
 }
 

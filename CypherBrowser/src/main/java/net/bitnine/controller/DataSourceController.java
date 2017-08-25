@@ -52,35 +52,16 @@ public class DataSourceController {
         
     	JSONObject jsonObject = new JSONObject();     
     	
-    	//checkValidDataSource(dbConnectionInfo);		// 사용자로부터 전달받은 dbconnect 정보로 생성한 dataSource의 유효성을 체크 
-
         String userId = idGenerator.generateId();            // id 생성
         String tokenString = tokenAuthentication.generateToken(userId);		// token 아이디와 사용자로부터 전달받은 dbconnect 정보로 token 생성.
         
         jsonObject.put("token", tokenString);
         
         jsonObject.put("message", "Database Connect Success");
-        
 
-        //saveConnectionInfo(userId, dbConnectionInfo);   // 사용자 db 접속정보를 application scope 객체 에 저장.
-        
         return jsonObject;
         
-        /*rttr.addFlashAttribute("json", jsonObject);
-        rttr.addFlashAttribute("msg", "success");
-        
-        if ( ADMIN.equals(dbConnectionInfo.getUsername()) ) {
 
-            return "redirect:query";
-        }
-        else if ( USER.equals(dbConnectionInfo.getUsername()) ) {
-
-            return "redirect:query";
-        }
-        else {
-
-            return "redirect:login";
-        }*/
         
     }
     

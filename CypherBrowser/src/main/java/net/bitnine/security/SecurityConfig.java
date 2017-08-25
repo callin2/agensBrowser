@@ -38,13 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
             .userDetailsService(securityUserService);
 	}
-    
-    /*@Bean
-    public AuthenticationSuccessHandler successHandler() {
-        SimpleUrlAuthenticationSuccessHandler handler = new RESTAuthenticationSuccessHandler();
-        handler.setUseReferer(true);
-        return handler;
-    }*/
+
 }
 
 

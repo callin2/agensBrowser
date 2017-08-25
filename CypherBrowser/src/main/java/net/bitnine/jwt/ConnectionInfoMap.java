@@ -7,13 +7,4 @@ import org.springframework.stereotype.Component;
 @Scope("application")
 public class ConnectionInfoMap {
 
-	/*private Map<String, ConnectInfo> connectInfos = new HashMap<>();
-
-	public Map<String, ConnectInfo> getConnectInfos() {
-		return connectInfos;
-	}
-
-	public void setConnectInfos(Map<String, ConnectInfo> connectInfos) {
-		this.connectInfos = connectInfos;
-	}*/
 }

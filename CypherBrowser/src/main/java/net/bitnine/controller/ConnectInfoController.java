@@ -30,11 +30,6 @@ public class ConnectInfoController {
 
     @Autowired private ClientConnectInfoService service;
     
-    /*@RequestMapping(value="/connectInfo", method=RequestMethod.POST)
-    public ConnectionInfoMap getConnectInfos() {        
-        return connectionInfoMap;
-    }*/
-
     @RequestMapping(method=RequestMethod.GET)
     public String adminGet() {
         return "admin";
@@ -156,27 +151,5 @@ public class ConnectInfoController {
         return jsonArray;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

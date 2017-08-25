@@ -43,14 +43,6 @@ public class DatabaseService {
 
     public void createPGPoolingDataSource (DBConnectionInfo dataSourceDTO, String tokenString) throws NamingException, QueryException {
 
-
-        /*BasicDataSource dataSource = new BasicDataSource();
-        
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl(dataSourceDTO.getUrl());
-        dataSource.setUsername(dataSourceDTO.getUsername());
-        dataSource.setPassword(dataSourceDTO.getPassword());*/
-        
         tokenString = tokenString.replaceAll("\\.","");
         
 
@@ -84,9 +76,6 @@ public class DatabaseService {
             ex.printStackTrace();
             throw new QueryException (JDBCTutorialUtilities.getSQLState(ex), ex);            
         }
-//      dataSource.getConnection();     // 유효한 dataSource인지를 체크
 
-//        new InitialContext().rebind("java:comp/env/jdbc/" + tokenString, dataSource);
-//        new InitialContext().bind(tokenString, dataSource);
     }
 }

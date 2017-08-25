@@ -36,8 +36,6 @@ public class VertexParser {
         List<Vertex> vertextList = new ArrayList<>();
          
         for (int i = 0; i < topCommaTokenizer.getSize(); i++) {
-//            System.out.println("topCommaTokenizer.getToken: " + topCommaTokenizer.getToken(i));
-
             String p = PGtokenizer.removeBox(topCommaTokenizer.getToken(i));
             
             Vertex vertex = createParsedVertext(p);
