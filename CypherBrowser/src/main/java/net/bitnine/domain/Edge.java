@@ -1,11 +1,7 @@
 package net.bitnine.domain;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.json.simple.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.json.simple.JSONObject;
 
 @JsonIgnoreProperties({ "rProps", "pProps" })
 public class Edge  {

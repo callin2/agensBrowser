@@ -1,10 +1,10 @@
 package net.bitnine.log;
 
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
+import net.bitnine.domain.dto.QueryInfo;
+import net.bitnine.jwt.ConnectionInfoMap;
+import net.bitnine.jwt.TokenAuthentication;
+import net.bitnine.service.HistoryService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -14,12 +14,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import net.bitnine.domain.History;
-import net.bitnine.domain.dto.QueryInfo;
-import net.bitnine.jwt.ConnectInfo;
-import net.bitnine.jwt.TokenAuthentication;
-import net.bitnine.service.HistoryService;
-import net.bitnine.jwt.ConnectionInfoMap;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 사용자의 접속정보, 쿼리 횟수의 로그 생성 클래스.

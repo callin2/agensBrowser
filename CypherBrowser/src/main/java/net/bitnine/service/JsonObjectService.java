@@ -1,34 +1,22 @@
 package net.bitnine.service;
 
-import static net.bitnine.controller.DataSourceController.DATASOURCE;
-
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp.BasicDataSource;
+import net.bitnine.domain.ClientConnectInfo;
+import net.bitnine.domain.History;
+import net.bitnine.exception.InvalidTokenException;
+import net.bitnine.exception.QueryException;
+import net.bitnine.jwt.ConnectionInfoMap;
+import net.bitnine.jwt.TokenAuthentication;
+import net.bitnine.persistence.JsonObjectRepository;
+import net.bitnine.util.GeneralUtils;
 import org.json.simple.JSONObject;
-import org.postgresql.ds.PGPoolingDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Claims;
-import net.bitnine.domain.ClientConnectInfo;
-import net.bitnine.domain.History;
-import net.bitnine.domain.dto.DBConnectionInfo;
-import net.bitnine.exception.InvalidTokenException;
-import net.bitnine.exception.QueryException;
-import net.bitnine.jwt.TokenAuthentication;
-import net.bitnine.jwt.ConnectionInfoMap;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.io.UnsupportedEncodingException;
+
 //import net.bitnine.jwt.TokenAuthentication;
-import net.bitnine.persistence.JsonObjectRepository;
-import net.bitnine.util.GeneralUtils;
 
 @Service
 public class JsonObjectService {

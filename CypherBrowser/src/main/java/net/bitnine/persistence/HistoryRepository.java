@@ -1,8 +1,7 @@
 package net.bitnine.persistence;
 
-import org.springframework.data.repository.CrudRepository;
-
 import net.bitnine.domain.History;
+import org.springframework.data.repository.CrudRepository;
 
 public interface HistoryRepository extends CrudRepository<History, String>{
 

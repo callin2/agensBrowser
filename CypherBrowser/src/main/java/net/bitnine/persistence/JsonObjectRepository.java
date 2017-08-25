@@ -1,37 +1,5 @@
 package net.bitnine.persistence;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.postgresql.jdbc.PgStatement;
-import org.postgresql.ds.PGPoolingDataSource;
-import org.postgresql.jdbc.PgConnection;
-import org.postgresql.jdbc.PgResultSet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import net.bitnine.domain.DataMeta;
 import net.bitnine.domain.Path;
 import net.bitnine.domain.Vertex;
@@ -42,6 +10,21 @@ import net.bitnine.parser.VertexParser;
 import net.bitnine.service.PropertiesService;
 import net.bitnine.util.JDBCTutorialUtilities;
 import net.bitnine.util.MetaDataUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.postgresql.jdbc.PgConnection;
+import org.postgresql.jdbc.PgResultSet;
+import org.postgresql.jdbc.PgStatement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.TreeMap;
 
 @Repository
 public class JsonObjectRepository {

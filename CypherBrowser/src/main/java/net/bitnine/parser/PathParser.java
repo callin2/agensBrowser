@@ -1,19 +1,18 @@
 package net.bitnine.parser;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+import net.bitnine.domain.Edge;
+import net.bitnine.domain.Path;
+import net.bitnine.domain.Vertex;
+import net.bitnine.util.TopCommaTokenizer;
 import org.json.simple.parser.ParseException;
 import org.postgresql.util.GT;
 import org.postgresql.util.PGtokenizer;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
 
-import net.bitnine.domain.Path;
-import net.bitnine.domain.Edge;
-import net.bitnine.domain.Vertex;
-import net.bitnine.util.TopCommaTokenizer;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PathParser {
     

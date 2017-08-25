@@ -1,12 +1,11 @@
 package net.bitnine.service;
 
-import java.util.List;
-
+import net.bitnine.domain.ClientConnectInfo;
+import net.bitnine.persistence.ClientConnectInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.bitnine.domain.ClientConnectInfo;
-import net.bitnine.persistence.ClientConnectInfoRepository;
+import java.util.List;
 
 @Service
 public class ClientConnectInfoService {

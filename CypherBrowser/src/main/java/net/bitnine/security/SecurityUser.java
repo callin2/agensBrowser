@@ -1,15 +1,14 @@
 package net.bitnine.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import net.bitnine.domain.Member;
+import net.bitnine.domain.MemberRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import net.bitnine.domain.Member;
-import net.bitnine.domain.MemberRole;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * DB에 저장된 Member 정보를 사용하여 userdetails 구현한 User를 생성.  출처 : 스타트 스프링 부트

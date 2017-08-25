@@ -1,41 +1,30 @@
 package net.bitnine.security;
 
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.WebAttributes;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 import net.bitnine.domain.ClientConnectInfo;
-import net.bitnine.domain.dto.DBConnectionInfo;
-import net.bitnine.jwt.ConnectInfo;
-import net.bitnine.jwt.ConnectionInfoMap;
 import net.bitnine.jwt.State;
 import net.bitnine.jwt.TokenAuthentication;
 import net.bitnine.service.ClientConnectInfoService;
 import net.bitnine.service.DatabaseService;
 import net.bitnine.util.GeneralUtils;
 import net.bitnine.util.IdGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
  
 /**
  * Spring Security Login 성공시 실행되는 핸들러. 출처 http://zgundam.tistory.com/52 포함.

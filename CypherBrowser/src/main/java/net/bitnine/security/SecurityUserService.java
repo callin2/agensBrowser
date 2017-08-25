@@ -1,12 +1,11 @@
 package net.bitnine.security;
 
+import net.bitnine.persistence.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import net.bitnine.persistence.MemberRepository;
 
 /**
  * jdbc 인증을 사용하는 서비스.  출처 : 스타트 스프링 부트

@@ -1,11 +1,7 @@
 package net.bitnine.parser;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import net.bitnine.domain.Vertex;
+import net.bitnine.util.TopCommaTokenizer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -14,8 +10,11 @@ import org.postgresql.util.PGtokenizer;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
 
-import net.bitnine.domain.Vertex;
-import net.bitnine.util.TopCommaTokenizer;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VertexParser {
     private static final Pattern _pattern;

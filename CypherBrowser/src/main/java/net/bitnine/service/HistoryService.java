@@ -1,13 +1,9 @@
 package net.bitnine.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import net.bitnine.domain.History;
 import net.bitnine.persistence.HistoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class HistoryService {

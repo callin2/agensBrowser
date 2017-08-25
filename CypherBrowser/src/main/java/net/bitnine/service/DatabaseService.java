@@ -1,18 +1,16 @@
 package net.bitnine.service;
 
-import java.sql.SQLException;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
+import net.bitnine.domain.dto.DBConnectionInfo;
+import net.bitnine.exception.QueryException;
+import net.bitnine.util.JDBCTutorialUtilities;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.postgresql.ds.PGPoolingDataSource;
 import org.springframework.stereotype.Service;
 
-import net.bitnine.domain.dto.DBConnectionInfo;
-import net.bitnine.exception.QueryException;
-import net.bitnine.util.JDBCTutorialUtilities;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
 @Service
 public class DatabaseService {

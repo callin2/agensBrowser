@@ -4,20 +4,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
-import net.bitnine.jwt.ConnectInfo;
-import net.bitnine.service.ClientConnectInfoService;
 import net.bitnine.domain.ClientConnectInfo;
-import net.bitnine.domain.dto.DBConnectionInfo;
 import net.bitnine.exception.InvalidTokenException;
-
+import net.bitnine.service.ClientConnectInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 import java.security.Key;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.Date;
 
 /**
  * 사용자 토큰 생성

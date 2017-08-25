@@ -1,13 +1,11 @@
 package net.bitnine.util;
 
+import net.bitnine.domain.DataMeta;
+
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
-
-import net.bitnine.domain.DataMeta;
 
 public class MetaDataUtils {
 

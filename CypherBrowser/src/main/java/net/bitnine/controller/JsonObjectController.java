@@ -1,26 +1,16 @@
 package net.bitnine.controller;
 
-import java.io.IOException;
-
-import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import net.bitnine.domain.dto.DBConnectionInfo;
 import net.bitnine.domain.dto.QueryInfo;
 import net.bitnine.exception.InvalidTokenException;
 import net.bitnine.exception.QueryException;
 import net.bitnine.service.JsonObjectService;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.naming.NamingException;
+import java.io.IOException;
 
 /**
  * 사용자의 query요청을 처리하는 컨트롤러

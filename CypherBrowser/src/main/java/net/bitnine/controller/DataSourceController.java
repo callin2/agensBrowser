@@ -1,30 +1,21 @@
 package net.bitnine.controller;
 
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
-
-import javax.naming.NamingException;
-
+import net.bitnine.domain.ClientConnectInfo;
+import net.bitnine.domain.dto.DBConnectionInfo;
+import net.bitnine.jwt.State;
+import net.bitnine.jwt.TokenAuthentication;
+import net.bitnine.service.ClientConnectInfoService;
+import net.bitnine.util.IdGenerator;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import net.bitnine.domain.ClientConnectInfo;
-import net.bitnine.domain.dto.DBConnectionInfo;
-import net.bitnine.jwt.ConnectInfo;
-import net.bitnine.jwt.State;
-import net.bitnine.jwt.TokenAuthentication;
-import net.bitnine.jwt.ConnectionInfoMap;
-import net.bitnine.service.ClientConnectInfoService;
-import net.bitnine.service.DatabaseService;
-import net.bitnine.util.IdGenerator;
+import javax.naming.NamingException;
+import java.sql.SQLException;
 
 /**
  * 사용자가 전송한 정보로 dataSource를 만드는 컨트롤러

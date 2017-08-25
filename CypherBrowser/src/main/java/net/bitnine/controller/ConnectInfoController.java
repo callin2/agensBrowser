@@ -1,33 +1,22 @@
 package net.bitnine.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-
-import javax.naming.NamingException;
-
+import net.bitnine.domain.ClientConnectInfo;
+import net.bitnine.domain.History;
+import net.bitnine.domain.dto.InvalidSession;
+import net.bitnine.exception.InvalidTokenException;
+import net.bitnine.exception.QueryException;
+import net.bitnine.jwt.State;
+import net.bitnine.service.ClientConnectInfoService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import net.bitnine.domain.ClientConnectInfo;
-import net.bitnine.domain.History;
-import net.bitnine.domain.dto.InvalidSession;
-import net.bitnine.domain.dto.QueryInfo;
-import net.bitnine.exception.InvalidTokenException;
-import net.bitnine.exception.QueryException;
-import net.bitnine.jwt.ConnectionInfoMap;
-import net.bitnine.jwt.State;
-import net.bitnine.service.ClientConnectInfoService;
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * 관리자가 사용자들의 접속 및 쿼리 정보를 조회하는 컨트롤러

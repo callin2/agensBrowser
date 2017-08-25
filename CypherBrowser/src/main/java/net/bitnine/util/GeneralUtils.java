@@ -1,9 +1,9 @@
 package net.bitnine.util;
 
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class GeneralUtils {
