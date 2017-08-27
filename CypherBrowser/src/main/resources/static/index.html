@@ -1,37 +1,106 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.12.7/coffee-script.min.js"></script>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/script/jquery-3.2.1.min.js"></script>
+    <script src="/script/api.js"></script>
+    <script src="/script/app.js"></script>
+
+
+    <!--spring security + jwt-->
+    <!--https://auth0.com/blog/securing-spring-boot-with-jwts/-->
+
     <style>
-        .result {
-            height:800px;
-            border: solid black 1px;
+        .content {
+            height: 800px;
+            border: 1px solid black;
+        }
+        .status {
+            height: 25px;
+            background-color: #EEE;
+        }
+        .menu > li {
+            cursor: pointer;
         }
     </style>
+
 </head>
 <body>
-Hello Agens!
-
-<h2>요구사항</h2>
-<ul>
-    <li>API
-        <ul>
-            <li>User API</li>
-            <li>Admin Api</li>
-        </ul>
-    </li>
-    <li>Query</li>
-    <li>Secutiry / Token</li>
-</ul>
-
-<div class="result">
-
+<div class="menu">
+    <ul class="menu">
+        <li class="login">Login <span>(issue token)</span></li>
+        <li class="usermenu">User Menu</li>
+        <li class="adminmenu">Admin Menu</li>
+    </ul>
 </div>
-<script language="coffeescript">
-    console.log 'hello'
 
+<div class="content"></div>
+
+<div class="status"></div>
+<!--==================================================================-->
+<script type="text/template" id="loginTmpl">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h2>LOGIN</h2>
+
+            <div class="message">
+            </div>
+
+            <form id="loginForm">
+                <p><label for="url">URL: </label><input type="text" id="url" class="url" name="url" value="jdbc:postgresql://27.117.163.21:15602/imdb"/></p>
+                <p><label for="username">Username</label> <input type="text" id="username" name="username" value="agraph" /></p>
+                <p><label for="password">Password</label> <input type="password" id="password" name="password" value="agraph" /></p>
+                <button type="submit" class="btn">Log in</button>
+            </form>
+
+        </div>
+    </div>
+</script>
+<!--==================================================================-->
+<script type="text/template" id="userTmpl">
+    <div class="navi">
+        <ul>
+            <li class="q1">query1</li>
+            <li class="q2">query2</li>
+            <li class="q3">query3</li>
+        </ul>
+    </div>
+    <div class="contents">
+        <form name = "queryForm" id="queryForm" action="/api/v1/db/query">
+            <p>
+                <label for="username">Authorization: </label>
+                <span id="authorization" class="authorization"></span>
+            </p>
+            <p>
+                <label for="query">QUERY: </label>
+                <textarea class="query" name="query">
+                    match (a)<-[c:produced]-(b)
+                    return id(a),label(a),a.title, id(b),label(b),b.name, label(c), id(c)
+                    limit 10
+                </textarea>
+            </p>
+            <p><button id="queryButton">query</button></p>
+        </form>
+    </div>
+    <div id="result"></div>
+    <div id="error"></div>
+</script>
+<!--==================================================================-->
+<script type="text/template" id="adminTmpl">
+    <div class="cont">
+        <form>
+            <p><label for="username">Authorization: </label><input type="text" id="authorization" class="authorization" name="authorization" /></p>
+        </form>
+    </div>
+    <div id="resultRap">
+        <div id="result"></div>
+        <div id="historyResult"></div>
+        <div id="error"></div>
+    </div>
 </script>
 </body>
 </html>
